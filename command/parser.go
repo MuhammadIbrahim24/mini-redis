@@ -12,8 +12,6 @@ var operations = map[string]int{
 	"GET":    2,
 	"DEL":    2,
 	"EXISTS": 2,
-	"COUNT":  1,
-	"KEYS":   1,
 }
 
 var (

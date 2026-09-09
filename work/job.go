@@ -8,4 +8,5 @@ type Job struct {
 	Key       string
 	Value     string
 	ExpiresAt time.Time
+	ResultCh  chan Result
 }

@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-func Worker(ctx context.Context, id int, wg *sync.WaitGroup, s *store.Store, jobs <-chan Job, resultCh chan<- Result) {
+func Worker(ctx context.Context, id int, wg *sync.WaitGroup, s *store.Store, jobs <-chan Job) {
 	defer wg.Done()
 	for {
 		select {
@@ -61,7 +61,7 @@ func Worker(ctx context.Context, id int, wg *sync.WaitGroup, s *store.Store, job
 			}
 
 			select {
-			case resultCh <- result:
+			case job.ResultCh <- result:
 			case <-ctx.Done():
 				return
 			}

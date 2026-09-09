@@ -27,7 +27,6 @@ type Pool struct {
 	mu            sync.Mutex
 	state         PoolState
 	jobs          []chan Job
-	results       chan Result
 	workerCount   int
 	wg            sync.WaitGroup
 	store         *store.Store
@@ -39,12 +38,11 @@ func NewPool(cfg Config, s *store.Store) (*Pool, error) {
 	if cfg.WorkerCount < 1 {
 		return nil, ErrInvalidWorkerCount
 	}
-	if cfg.JobBufferSize < 0 || cfg.ResultBufferSize < 0 {
+	if cfg.JobBufferSize < 0 {
 		return nil, ErrInvalidBufferSize
 	}
 	return &Pool{
 		jobs:          make([]chan Job, cfg.WorkerCount),
-		results:       make(chan Result, cfg.ResultBufferSize),
 		workerCount:   cfg.WorkerCount,
 		jobBufferSize: cfg.JobBufferSize,
 		store:         s,
@@ -63,13 +61,9 @@ func (p *Pool) Start(ctx context.Context) error {
 	for i := range p.workerCount {
 		p.jobs[i] = make(chan Job, p.jobBufferSize)
 		p.wg.Add(1)
-		go Worker(ctx, i, &p.wg, p.store, p.jobs[i], p.results)
+		go Worker(ctx, i, &p.wg, p.store, p.jobs[i])
 	}
 	return nil
-}
-
-func (p *Pool) Results() <-chan Result {
-	return p.results
 }
 
 func (p *Pool) Publish(j Job) error {
@@ -103,8 +97,6 @@ func (p *Pool) Stop() error {
 	}
 	//wait for workers to be terminated
 	p.wg.Wait()
-	//close results channel
-	close(p.results)
 	return nil
 }
 

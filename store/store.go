@@ -86,31 +86,6 @@ func (s *Store) Exists(key string) bool {
 	return false
 }
 
-func (s *Store) Count() int {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	count := 0
-	for key := range s.data {
-		if !isExpired(s.data[key]) {
-			count++
-		}
-	}
-	return count
-}
-
-func (s *Store) Keys() []string {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	keys := []string{}
-
-	for key := range s.data {
-		if !isExpired(s.data[key]) {
-			keys = append(keys, key)
-		}
-	}
-	return keys
-}
-
 func (s *Store) removeExpired() int {
 	s.mu.Lock()
 	defer s.mu.Unlock()
