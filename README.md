@@ -27,8 +27,6 @@ Enter one command per line:
 | `GET key` | Read a value | `GET name` |
 | `DEL key` | Delete a key | `DEL name` |
 | `EXISTS key` | Check whether a non-expired key exists | `EXISTS name` |
-| `COUNT` | Count non-expired keys | `COUNT` |
-| `KEYS` | List non-expired keys | `KEYS` |
 | `EXIT` | Stop the application and persist changes | `EXIT` |
 
 Values may contain spaces. Expired keys are ignored by reads, counts, and key listings, and are removed periodically by the expiration loop.
@@ -40,7 +38,6 @@ SET user Ibrahim
 GET user
 SET temporary value EX 10
 EXISTS temporary
-COUNT
 KEYS
 EXIT
 ```

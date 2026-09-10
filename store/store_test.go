@@ -201,4 +201,6 @@ func TestGet(t *testing.T) {
 			}
 		})
 	}
+
+	//ToD: add test cases for other store methods
 }
